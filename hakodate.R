@@ -3,6 +3,7 @@ library(dplyr)
 library(data.table)
 library(pdftools)
 library(stringr)
+library(tidyr)
 repeat{
   while(format(Sys.time(),"%H")%in%c("17","18","19","20")){
      path<-"https://www.city.hakodate.hokkaido.jp/docs/2020050300019/"
@@ -161,16 +162,32 @@ repeat{
       seireki<-paste0(S,str_sub(Date,e,-1))
       DF$Date[k]<-seireki
       if(as.Date(seireki,"%Y年%m月%d日")>="2022-01-26"){
-        
-        pd<-pdf_data(paste0(path,RH[k,1]))[[1]]$text
-        TD<-pd%>%data.frame()%>%rename("text"=".")
-        wh1<-which(str_detect(TD$text,"居住地別"))
-        DF$函館市内[k]<-TD$text[wh1+2]
-        
-        wh2<-which(str_detect(TD$text,"函館市.+道内"))
-        DF$北海道内[k]<-TD$text[wh2+1]
-        wh3<-which(str_detect(TD$text,"函館市.+道外"))
-        DF$北海道外[k]<-TD$text[wh3+1]
+         #pd<-pdf_data(paste0(path,RH[k,1]))[[1]]
+         pd<-pdf_text(paste0(path,RH[k,1]))%>%
+            base::strsplit("\n\n")%>%
+            data.frame()
+         colnames(pd)<-"text"
+         pd2<-pd%>%
+            filter(str_detect(text,"居住地別"))%>%
+            mutate(text2=str_replace_all(text," +","_"))
+         re<-regexpr("函館市_.{1,3}_",pd2$text2)
+         at<-attr(re,"match.length")
+         DF$函館市内[k]<-substring(pd2$text2,re+4,re+at-2)
+         re<-regexpr("函館市外（道内）_.{1,3}_",pd2$text2)
+         at<-attr(re,"match.length")
+         DF$北海道内[k]<-substring(pd2$text2,re+9,re+at-2)
+         re<-regexpr("函館市外（道外）_.{1,3}_??",pd2$text2)
+         at<-attr(re,"match.length")
+         DF$北海道外[k]<-substring(pd2$text2,re+9,re+at)%>%str_remove("_")
+        # pd<-pdf_data(paste0(path,RH[k,1]))[[1]]$text
+        # TD<-pd%>%data.frame()%>%rename("text"=".")
+        # wh1<-which(str_detect(TD$text,"居住地別"))
+        # DF$函館市内[k]<-TD$text[wh1+2]
+        # 
+        # wh2<-which(str_detect(TD$text,"函館市.+道内"))
+        # DF$北海道内[k]<-TD$text[wh2+1]
+        # wh3<-which(str_detect(TD$text,"函館市.+道外"))
+        # DF$北海道外[k]<-TD$text[wh3+1]
       }else{
       if(as.Date(seireki,"%Y年%m月%d日")=="2022-01-25"){
         DF$函館市内[k]<-98
