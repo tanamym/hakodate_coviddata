@@ -1,0 +1,17 @@
+hakodate20210822.csvは函館市内で発生したデータ。
+2020年以前のデータから2021年8月22日までのデータとなっている。
+エンコードはUTF-8になっている。
+函館市は
+"https://www.city.hakodate.hokkaido.jp/docs/2020122400074/",
+    "https://www.city.hakodate.hokkaido.jp/docs/2021011600032/",
+    "https://www.city.hakodate.hokkaido.jp/docs/2021020200025/",
+    "https://www.city.hakodate.hokkaido.jp/docs/2021033100039/",
+    "https://www.city.hakodate.hokkaido.jp/docs/2021051800041/",
+    "https://www.city.hakodate.hokkaido.jp/docs/2021062600012/",
+    "https://www.city.hakodate.hokkaido.jp/docs/2021080500028/",
+    "https://www.city.hakodate.hokkaido.jp/docs/2021081600017/",
+    "https://www.city.hakodate.hokkaido.jp/docs/2021082500057/"
+から作成。
+日付を補うために
+https://www.harp.lg.jp/opendata/dataset/1369/resource/3132/010006_hokkaido_covid19_patients.csv
+を使用した。
